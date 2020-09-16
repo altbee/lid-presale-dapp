@@ -3,6 +3,34 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Text, Box, Button, Grid } from '@chakra-ui/core';
 import { shortEther } from 'utils';
 
+import styled from "styled-components";
+
+const BoxOutLineExample = styled.div`
+
+  width: 100%;
+  border: 1px solid #E4E4E4;
+  border-radius: 5px;
+  padding: 25px;
+  background-color: ##fff;
+
+  h2 {
+    font-size: 38px;
+    with: 100%;
+    font-weight: bold;
+    color: black;
+  }
+
+  p {
+    
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    color: #5B5B5B;
+  
+  }
+
+`
+
 interface IReferralCode {
   address: string;
   earnedReferrals: string;
@@ -70,6 +98,7 @@ const ReferralCode: React.FC<IReferralCode> = ({
           {`${siteUrl}/#/${address}`}
         </Text>
       </Box>
+      
       <Grid
         w="100%"
         gap="20px"
@@ -77,36 +106,15 @@ const ReferralCode: React.FC<IReferralCode> = ({
         templateRows={['repeat(2, 1fr)', 'max-content']}
         templateColumns={['auto', 'repeat(2, minmax(0, 1fr))']}
       >
-        <Box
-          w="100%"
-          borderRadius="5px"
-          p="25px"
-          border="solid 1px"
-          borderColor="lid.stroke"
-          bg="lid.bg"
-        >
-          <Text fontSize="18px" m="0" p="0" color="lid.fgMed">
-            Account number of referrals
-          </Text>
-          <Text fontSize="38px" w="100%" fontWeight="bold">
-            {referralCounts}
-          </Text>
-        </Box>
-        <Box
-          w="100%"
-          borderRadius="5px"
-          p="25px"
-          border="solid 1px"
-          borderColor="lid.stroke"
-          bg="lid.bg"
-        >
-          <Text fontSize="18px" m="0" p="0" color="lid.fgMed">
-            Referral Eth Earned
-          </Text>
-          <Text fontSize="38px" w="100%" fontWeight="bold">
-            {shortEther(earnedReferrals)}
-          </Text>
-        </Box>
+        <BoxOutLineExample>
+            <p> Account number of referrals </p>
+            <h2> {referralCounts} </h2>
+        </BoxOutLineExample>
+
+        <BoxOutLineExample>
+            <p> Referral Eth Earned </p>
+            <h2> {shortEther(earnedReferrals)} </h2>
+        </BoxOutLineExample>
       </Grid>
     </Box>
   );
