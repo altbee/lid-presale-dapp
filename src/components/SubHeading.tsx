@@ -8,6 +8,8 @@ import imgLidLogo from 'assets/images/common/logo-lid.png';
 import imgDepositor from 'assets/images/common/depositor.png';
 import { DappMetaData } from 'types';
 
+import styled from "styled-components";
+
 interface ISubHeading {
   totalEth: string;
   maxShares: string;
@@ -28,6 +30,87 @@ const SubHeadings: React.FC<ISubHeading> = ({
   meta
 }) => {
   const { addresses } = meta;
+
+
+  const BoxOutline = styled.div`
+
+  width: 100%;
+  border: 1px solid #E4E4E4;
+  border-radius: 5px;
+  padding: 25px;
+
+  background-color: ${props => props.color};
+  background: ${props => props.color};
+
+`
+  const WhiteBox = {
+    titleColor: "lid.fgMed",
+    contentColor: "lid.brand",
+    background: "#fff"
+  }
+
+  const BlueBox = {
+    titleColor: "lid.bg",
+    contentColor: "lid.bg",
+    background: "linear-gradient(0deg, rgba(12,101,235,1) 0%, rgba(28,158,247,1) 100%)"
+  }
+
+  const SubHeadingData = [
+    {
+      id: 1,
+      styles: BlueBox,
+      title: "Your ETH Deposits",
+      content: shortEther(accountEthDeposit),
+      image: imgETHLogoWhite,
+    },
+    {
+      id: 2,
+      styles: BlueBox,
+      title: "Your CXN Tokens",
+      content: getMetaTokens(),
+      image: formatAssetUrl(meta.tokenName, 'logo.png'),
+    },
+    {
+      id: 2,
+      styles: WhiteBox,
+      title: "Total Presale Depositors",
+      content: totalDepositors,
+      image: imgDepositor,
+    },
+    {
+      id: 3,
+      styles: WhiteBox,
+      title: "Total ETH Deposited",
+      content: shortEther(totalEth),
+      image: imgETHLogo,
+    },
+    {
+      id: 4,
+      styles: WhiteBox,
+      title: "Total Presale " + meta.tokenName,
+      content: shortEther(toWei(meta.totalPresale)),
+      image: formatAssetUrl(meta.tokenName, 'logo.png'),
+    },
+    {
+      id: 5,
+      styles: WhiteBox,
+      title: "Your Staking Lid Tokens",
+      content: shortEther(stakingLid),
+      image: imgLidLogo,
+    }
+  ]
+
+  function getMetaTokens () {
+    return ( maxShares !== '0'
+    ? shortEther(
+        toBN(accountShares)
+          .mul(toBN(toWei(meta.totalPresale)))
+          .div(toBN(maxShares))
+          .toString()
+      )
+    : '0');
+  }
+
   return (
     <Box
       w="100%"
@@ -65,14 +148,8 @@ const SubHeadings: React.FC<ISubHeading> = ({
           templateRows={['repeat(6, 1fr)', 'repeat(2, max-content)']}
           templateColumns={['auto', 'repeat(3, minmax(0, 1fr))']}
         >
-          <Box
-            w="100%"
-            borderRadius="5px"
-            p="25px"
-            border="solid 1px"
-            borderColor="lid.stroke"
-            bg="lid.bg"
-          >
+
+        <BoxOutline color="#fff">
             <Text fontSize="18px" m="0" p="0" color="lid.fgMed">
               {`Verified ${meta.tokenName} Presale Contract`}
             </Text>
@@ -89,18 +166,12 @@ const SubHeadings: React.FC<ISubHeading> = ({
             ) : (
               <Text>TBD</Text>
             )}
-          </Box>
-          <Box
-            w="100%"
-            border="solid 1px"
-            borderColor="lid.stroke"
-            color="white"
-            borderRadius="5px"
-            p="25px"
-            background="linear-gradient(0deg, rgba(12,101,235,1) 0%, rgba(28,158,247,1) 100%)"
-          >
+        </BoxOutline>
+
+        {SubHeadingData.map(data =>
+          <BoxOutline color={data.styles.background}>
             <Image
-              src={imgETHLogoWhite}
+              src={data.image}
               alt="eth logo"
               w="auto"
               h="25px"
@@ -108,145 +179,14 @@ const SubHeadings: React.FC<ISubHeading> = ({
               position="relative"
               top="-3px"
             />
-            <Text ml="10px" mt="5px" color="lid.bg" display="inline-block">
-              Your ETH Deposits
+            <Text ml="10px" mt="5px" color={data.styles.titleColor} display="inline-block">
+              {data.title}
             </Text>
-            <Text fontSize="38px" w="100%" fontWeight="bold">
-              {shortEther(accountEthDeposit)}
+            <Text fontSize="38px" w="100%" color={data.styles.contentColor} fontWeight="bold">
+              {data.content}
             </Text>
-          </Box>
-          <Box
-            w="100%"
-            border="solid 1px"
-            borderColor="lid.stroke"
-            color="white"
-            borderRadius="5px"
-            p="25px"
-            background="linear-gradient(0deg, rgba(12,101,235,1) 0%, rgba(28,158,247,1) 100%)"
-          >
-            <Image
-              src={formatAssetUrl(meta.tokenName, 'logo.png')}
-              alt="token logo"
-              w="auto"
-              h="25px"
-              display="inline-block"
-              position="relative"
-              top="-3px"
-            />
-            <Text ml="10px" mt="5px" color="lid.bg" display="inline-block">
-              {`Your ${meta.tokenName} Tokens`}
-            </Text>
-            <Text fontSize="38px" w="100%" fontWeight="bold">
-              {maxShares !== '0'
-                ? shortEther(
-                    toBN(accountShares)
-                      .mul(toBN(toWei(meta.totalPresale)))
-                      .div(toBN(maxShares))
-                      .toString()
-                  )
-                : '0'}
-            </Text>
-          </Box>
-          <Box
-            w="100%"
-            border="solid 1px"
-            borderColor="lid.stroke"
-            color="lid.fg"
-            borderRadius="5px"
-            p="25px"
-            bg="lid.bg"
-          >
-            <Image
-              src={imgDepositor}
-              alt="depositor"
-              w="auto"
-              h="25px"
-              display="inline-block"
-              position="relative"
-              top="-3px"
-            />
-            <Text ml="10px" mt="5px" color="lid.fgMed" display="inline-block">
-              Total Presale Depositors
-            </Text>
-            <Text fontSize="38px" w="100%" fontWeight="bold" color="lid.brand">
-              {totalDepositors}
-            </Text>
-          </Box>
-          <Box
-            w="100%"
-            border="solid 1px"
-            borderColor="lid.stroke"
-            color="lid.fg"
-            borderRadius="5px"
-            p="25px"
-            bg="lid.bg"
-          >
-            <Image
-              src={imgETHLogo}
-              alt="eth logo"
-              w="auto"
-              h="25px"
-              display="inline-block"
-              position="relative"
-              top="-3px"
-            />
-            <Text ml="10px" mt="5px" color="lid.fgMed" display="inline-block">
-              Total ETH Deposited
-            </Text>
-            <Text fontSize="38px" w="100%" fontWeight="bold" color="lid.brand">
-              {shortEther(totalEth)}
-            </Text>
-          </Box>
-          <Box
-            w="100%"
-            border="solid 1px"
-            borderColor="lid.stroke"
-            color="lid.fg"
-            borderRadius="5px"
-            p="25px"
-            bg="lid.bg"
-          >
-            <Image
-              src={formatAssetUrl(meta.tokenName, 'logo.png')}
-              alt="token logo"
-              w="auto"
-              h="25px"
-              display="inline-block"
-              position="relative"
-              top="-3px"
-            />
-            <Text ml="10px" mt="5px" color="lid.fgMed" display="inline-block">
-              {`Total Presale ${meta.tokenName}`}
-            </Text>
-            <Text fontSize="38px" w="100%" fontWeight="bold" color="lid.brand">
-              {shortEther(toWei(meta.totalPresale))}
-            </Text>
-          </Box>
-          <Box
-            w="100%"
-            border="solid 1px"
-            borderColor="lid.stroke"
-            color="lid.fg"
-            borderRadius="5px"
-            p="25px"
-            bg="lid.bg"
-          >
-            <Image
-              src={imgLidLogo}
-              alt="Lid Website"
-              w="auto"
-              h="25px"
-              display="inline-block"
-              position="relative"
-              top="-3px"
-            />
-            <Text ml="10px" mt="5px" color="lid.fgMed" display="inline-block">
-              Your Staking Lid Tokens
-            </Text>
-            <Text fontSize="38px" w="100%" fontWeight="bold" color="lid.brand">
-              {shortEther(stakingLid)}
-            </Text>
-          </Box>
+          </BoxOutline>
+        )}
         </Grid>
       </Flex>
     </Box>
