@@ -64,16 +64,12 @@ const Web3Wrapper: React.FC<IWeb3Wrapper> = ({ children }) => {
     const web3 = await new Web3(provider);
     // await subscribeProvider(provider, web3); 
     const accounts = await web3.eth.getAccounts();
-    const address = accounts[0];
 
+    window.web3.currentProvider.on('accountsChanged', function (accounts: any) {
+      setAddress(accounts[0])
+    })
 
-    window.web3.currentProvider.publicConfigStore.on('update',  function(callback: any) {
-      //Put logic here to change when wallet change happens.
-      console.log(callback);
-
-    });
-
-    //setAddress(address);
+    setAddress(accounts[0])
     setProvider(provider);
     setWeb3(web3);
   };
