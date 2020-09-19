@@ -254,39 +254,6 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
     }
   }, [accessTime]);
 
-  useEffect( () => {
-
-    async function getWalletAmount(){
-
-      async function loadWeb3() {
-          if (window.ethereum) {
-              window.web3 = new Web3(window.ethereum)
-              await window.ethereum.enable()
-              return(true);
-          }
-          else if (window.web3) {
-              window.web3 = new Web3(window.web3.currentProvider)
-              return(true);
-          }
-          else {
-              return(false);
-          }
-      }
-  
-      var wallet = await loadWeb3();
-        
-      if (wallet) {
-          const web3 = window.web3
-
-          const accounts = await web3.eth.getAccounts()
-          console.log(accounts);
-      }
-
-  }
-
-  getWalletAmount();
-}, []);
-
   return (
     <>
       <Header address={address} meta={meta} onConnect={onConnect} />
