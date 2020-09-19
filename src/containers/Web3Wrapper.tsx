@@ -14,12 +14,15 @@ interface IWeb3Wrapper {
 type Web3Provider = HttpProvider | IpcProvider | WebsocketProvider;
 
 const Web3Wrapper: React.FC<IWeb3Wrapper> = ({ children }) => {
+
   const [address, setAddress] = useState('');
   const [provider, setProvider] = useState<Web3Provider | null>(
     new Web3.providers.HttpProvider(
       `https://mainnet.infura.io/v3/${getRandomInfuraId()}`
     )
+
   );
+  
   const [web3, setWeb3] = useState<Web3 | null>(new Web3(provider));
 
   // const resetApp = async () => {

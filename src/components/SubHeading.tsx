@@ -31,17 +31,13 @@ const SubHeadings: React.FC<ISubHeading> = ({
 }) => {
   const { addresses } = meta;
 
-
   const BoxOutline = styled.div`
-
-  width: 100%;
-  border: 1px solid #E4E4E4;
-  border-radius: 5px;
-  padding: 25px;
-
-  background-color: ${props => props.color};
-  background: ${props => props.color};
-
+    width: 100%;
+    border: 1px solid #E4E4E4;
+    border-radius: 5px;
+    padding: 25px;
+    background-color: ${props => props.color};
+    background: ${props => props.color};
 `
   const WhiteBox = {
     titleColor: "lid.fgMed",

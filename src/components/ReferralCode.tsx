@@ -21,12 +21,10 @@ const BoxOutLineExample = styled.div`
   }
 
   p {
-    
     font-size: 18px;
     margin: 0;
     padding: 0;
     color: #5B5B5B;
-  
   }
 
 `
@@ -115,6 +113,7 @@ const ReferralCode: React.FC<IReferralCode> = ({
             <p> Referral Eth Earned </p>
             <h2> {shortEther(earnedReferrals)} </h2>
         </BoxOutLineExample>
+
       </Grid>
     </Box>
   );
