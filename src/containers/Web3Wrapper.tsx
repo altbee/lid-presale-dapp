@@ -57,6 +57,7 @@ const Web3Wrapper: React.FC<IWeb3Wrapper> = ({ children }) => {
   //   );
   // };
 
+
   const onConnect = async () => {
 
     const provider = await web3Modal.connect();
@@ -65,21 +66,20 @@ const Web3Wrapper: React.FC<IWeb3Wrapper> = ({ children }) => {
     const accounts = await web3.eth.getAccounts();
     const address = accounts[0];
 
-    const web2 = await window.web3;    
-    web2.currentProvider.publicConfigStore.on('update',  function(callback: any) {
-      const address = callback.selectedAddress;
 
-      setAddress(address);
+    window.web3.currentProvider.publicConfigStore.on('update',  function(callback: any) {
+      //Put logic here to change when wallet change happens.
+      console.log(callback);
+
     });
 
-    setAddress(address);
+    //setAddress(address);
     setProvider(provider);
     setWeb3(web3);
   };
 
   useEffect(() => {
     if (window.web3) onConnect();
-
   }, []);
 
   return <>{children(address, web3, onConnect)}</>;

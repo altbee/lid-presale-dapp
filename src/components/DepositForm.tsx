@@ -36,6 +36,8 @@ const DepositForm: React.FC<IDepositForm> = ({
   currentPrice,
   meta
 }) => {
+
+  
   const [displayVal, setDisplayVal] = useState('0');
   const depositVal = !!displayVal ? toWei(displayVal) : '0';
 
@@ -128,7 +130,7 @@ const DepositForm: React.FC<IDepositForm> = ({
           {`Deposit ETH for ${meta.tokenName}`}
         </Text>
         <Text fontSize="18px" color="blue.500">
-          Minimum 0.01 ETH, Maximum {removeDecimal(fromWei(hardcap))} ETH
+          Minimum 0.01 ETH, Maximum {fromWei(meta.accountCap)} ETH
         </Text>
         <Text fontSize="18px" color="red.500">
           Your Available Max: {removeDecimal(fromWei(availableMax))} ETH
