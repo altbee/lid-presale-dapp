@@ -8,7 +8,7 @@ import { AbiItem } from 'web3-utils';
 import { Contract } from 'web3-eth-contract';
 import { toWei } from 'utils';
 import abis from 'contracts/abis';
-import { totalPresale } from '../config';
+import { totalPresale, BonusRange } from '../config';
 
 import Header from './Header';
 import SubHeading from './SubHeading';
@@ -20,6 +20,8 @@ import DepositForm from './DepositForm';
 import PresaleCompletion from './PresaleCompletion';
 import Claimer from './Claimer';
 import { DappMetaData } from 'types';
+
+import BonusStructure from './ BonusStructure'
 
 const defaultWatcher = createWatcher([], {});
 const walletWatcher = createWatcher([], {});
@@ -256,7 +258,10 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
 
   return (
     <>
+     <BonusStructure />
+     
       <Header address={address} meta={meta} onConnect={onConnect} />
+      
       <SubHeading
         totalEth={totalEth}
         meta={meta}
