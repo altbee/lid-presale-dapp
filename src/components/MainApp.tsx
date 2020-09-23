@@ -21,7 +21,7 @@ import PresaleCompletion from './PresaleCompletion';
 import Claimer from './Claimer';
 import { DappMetaData } from 'types';
 
-import BonusStructure from './ BonusStructure'
+import BonusStructure from './BonusStructure'
 
 const defaultWatcher = createWatcher([], {});
 const walletWatcher = createWatcher([], {});

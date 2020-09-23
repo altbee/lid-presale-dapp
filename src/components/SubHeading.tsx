@@ -57,7 +57,7 @@ const SubHeadings: React.FC<ISubHeading> = ({
         pt="20px"
         pb="20px"
         position="relative"
-        zIndex={2}
+        zIndex={0}
       >
         <Grid
           w="100%"
