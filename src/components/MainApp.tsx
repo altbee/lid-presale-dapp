@@ -8,7 +8,6 @@ import { AbiItem } from 'web3-utils';
 import { Contract } from 'web3-eth-contract';
 import { toWei } from 'utils';
 import abis from 'contracts/abis';
-import { totalPresale, BonusRange } from '../config';
 
 import Header from './Header';
 import SubHeading from './SubHeading';
@@ -54,7 +53,10 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
     accountClaimedTokens: '0',
     maxShares: '0',
     hardcap: '0',
+    hardCapTimer: 0,
     stakingLid: '0',
+    redeemBP: '1',
+    redeemInterval: '1',
     isEnded: false,
     isPaused: false
   });
@@ -76,7 +78,10 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
     accountClaimedTokens,
     maxShares,
     hardcap,
+    hardCapTimer,
     stakingLid,
+    redeemBP,
+    redeemInterval,
     isEnded,
     isPaused
   } = state;
@@ -131,7 +136,7 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
         },
         {
           target: addresses.presale,
-          call: ['getMaxWhitelistedDeposit()(uint256)'],
+          call: ['maxBuyPerAddress()(uint256)'],
           returns: [['maxDeposit', (val: any) => val.toString()]]
         },
         {
@@ -140,9 +145,24 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
           returns: [['endTime', (val: any) => val.toNumber() * 1000]]
         },
         {
+          target: addresses.timer,
+          call: ['hardCapTimer()(uint256)'],
+          returns: [['hardCapTimer', (val: any) => val.toNumber() / 3600]]
+        },
+        {
           target: addresses.presale,
           call: ['hardcap()(uint256)'],
           returns: [['hardcap', (val: any) => val.toString()]]
+        },
+        {
+          target: addresses.redeemer,
+          call: ['redeemBP()(uint256)'],
+          returns: [['redeemBP', (val: any) => val.toString()]]
+        },
+        {
+          target: addresses.redeemer,
+          call: ['redeemInterval()(uint256)'],
+          returns: [['redeemInterval', (val: any) => val.toString()]]
         }
       ],
       multiCallConfig
@@ -161,8 +181,10 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
   useEffect(() => {
     if (!web3 || !address || hardcap === '0') {
       return;
-    } 
-    
+    }
+
+    walletWatcher.stop();
+
     walletWatcher.recreate(
       [
         {
@@ -213,7 +235,7 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
           target: addresses.redeemer,
           call: [
             'calculateRatePerEth(uint256,uint256,uint256)(uint256)',
-            toWei(totalPresale),
+            toWei(meta.totalPresale),
             totalEth,
             hardcap
           ],
@@ -225,7 +247,7 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
             'calculateReedemable(address,uint256,uint256)(uint256)',
             address,
             finalEndTime,
-            toWei(totalPresale)
+            toWei(meta.totalPresale)
           ],
           returns: [['accountRedeemable', (val: any) => val.toString()]]
         }
@@ -258,10 +280,8 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
 
   return (
     <>
-     <BonusStructure />
-     
+      <BonusStructure />
       <Header address={address} meta={meta} onConnect={onConnect} />
-      
       <SubHeading
         totalEth={totalEth}
         meta={meta}
@@ -292,6 +312,8 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
           address={address}
           meta={meta}
           maxShares={maxShares}
+          redeemBP={redeemBP}
+          redeemInterval={redeemInterval}
           finalEndTime={finalEndTime}
           accountShares={accountShares}
           accountRedeemable={accountRedeemable}
@@ -301,7 +323,12 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
       {isActive && !isEnded && !isPaused && (
         <>
           {endTime !== 0 && (
-            <EndTimer expiryTimestamp={endTime} hardcap={hardcap} />
+            <EndTimer
+              expiryTimestamp={endTime}
+              hardcap={hardcap}
+              hardCapTimer={hardCapTimer}
+              meta={meta}
+            />
           )}
           <DepositForm
             web3={web3}
@@ -354,3 +381,5 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
 };
 
 export default MainApp;
+
+
