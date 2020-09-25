@@ -22,8 +22,6 @@ import { DappMetaData } from 'types';
 
 import BonusStructure from './BonusStructure'
 
-import cxnABI from '../contracts/abis/cxnABI.json'
-
 const defaultWatcher = createWatcher([], {});
 const walletWatcher = createWatcher([], {});
 

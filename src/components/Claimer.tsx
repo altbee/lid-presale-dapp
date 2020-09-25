@@ -57,7 +57,7 @@ const Claimer: React.FC<IClaimer> = ({
 
     await lidPresaleSC.methods
       .claimRefund(accountAddress)
-      .send({ from: accountAddress });
+      .send({from: accountAddress });
     alert(
       'Deposit request sent. Check your wallet to see when it has completed, then refresh this page.'
     );
@@ -77,8 +77,7 @@ const Claimer: React.FC<IClaimer> = ({
     } else {
       setActive(false);
     }
-    console.log(isRefunding);
-  }, [redeemBP, redeemInterval]);
+}, [redeemBP, redeemInterval]);
 
   const handleClaim = async function () {
     if (!lidPresaleSC) {
