@@ -22,6 +22,8 @@ import { DappMetaData } from 'types';
 
 import BonusStructure from './BonusStructure'
 
+import cxnABI from '../contracts/abis/cxnABI.json'
+
 const defaultWatcher = createWatcher([], {});
 const walletWatcher = createWatcher([], {});
 
@@ -32,10 +34,13 @@ interface IMainApp {
   meta: DappMetaData;
 }
 
+
+
 const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
   const { addresses } = meta;
   const [lidPresaleSC, setLidPresale] = useState<Contract | null>(null);
   const [isActive, setIsActive] = useState(false);
+  
   const [state, setState] = useState({
     startTime: Date.UTC(2020, 8, 1, 3, 45, 0, 0),
     accessTime: Date.UTC(2020, 8, 1, 4, 0, 0, 0),
@@ -58,7 +63,8 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
     redeemBP: '1',
     redeemInterval: '1',
     isEnded: false,
-    isPaused: false
+    isPaused: false,
+    isRefunding: false
   });
 
   const {
@@ -83,7 +89,8 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
     redeemBP,
     redeemInterval,
     isEnded,
-    isPaused
+    isPaused,
+    isRefunding
   } = state;
 
   let referralAddress = window.location.hash.substr(2);
@@ -94,6 +101,10 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
     multicallAddress: '0xeefba1e63905ef1d7acba5a8513c70307c1ce441',
     interval: 10000
   };
+
+  function get_isRasied() {
+
+  }
 
   useEffect(() => {
     if (!web3) {
@@ -163,7 +174,7 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
           target: addresses.redeemer,
           call: ['redeemInterval()(uint256)'],
           returns: [['redeemInterval', (val: any) => val.toString()]]
-        }
+        }, 
       ],
       multiCallConfig
     );
@@ -250,6 +261,11 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
             toWei(meta.totalPresale)
           ],
           returns: [['accountRedeemable', (val: any) => val.toString()]]
+        },
+        {
+          target: addresses.presale,
+          call: ['isRefunding()(bool)'],
+          returns: [['isRefunding']]
         }
       ],
       multiCallConfig
@@ -318,6 +334,7 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect, meta }) => {
           accountShares={accountShares}
           accountRedeemable={accountRedeemable}
           accountClaimedTokens={accountClaimedTokens}
+          isRefunding={isRefunding}
         />
       )}
       {isActive && !isEnded && !isPaused && (
