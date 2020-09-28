@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Box, Button, Grid } from '@chakra-ui/core'
+import { Text, Box, Button, Grid } from '@chakra-ui/core';
 import { shortEther, toBN, toWei } from 'utils';
 import { Contract } from 'web3-eth-contract';
 import CountDownShort from './CountDownShort';
@@ -29,15 +29,14 @@ const Claimer: React.FC<IClaimer> = ({
   accountClaimedTokens,
   redeemBP,
   redeemInterval,
-  meta,
-  isRefunding
+  meta
 }) => {
   const [active, setActive] = useState(true);
 
   const redeemPercent = Math.floor(
     Number(redeemBP) / 100 / (Number(redeemInterval) / 3600)
   );
-  
+
   const claimPeriod = toBN(finalEndTime)
     .add(toBN(redeemInterval).mul(toBN(10000)).div(toBN(redeemBP)))
     .toNumber();
@@ -103,7 +102,6 @@ const Claimer: React.FC<IClaimer> = ({
             display="inline-block"
             min={0.01}
             mt="10px"
-            onChange={updateAddress}
           />
 
           <Button
