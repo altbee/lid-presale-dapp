@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Box, Button, Grid } from '@chakra-ui/core';
+import { Text, Box, Button, Grid, Input } from '@chakra-ui/core';
 import { shortEther, toBN, toWei } from 'utils';
 import { Contract } from 'web3-eth-contract';
 import CountDownShort from './CountDownShort';
@@ -29,13 +29,39 @@ const Claimer: React.FC<IClaimer> = ({
   accountClaimedTokens,
   redeemBP,
   redeemInterval,
-  meta
+  meta,
+  isRefunding
 }) => {
   const [active, setActive] = useState(true);
+  const [accountAddress, setAccountAddress] = useState("placeHolder");
+
+  const updateAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAccountAddress(event.target.value);
+  }
 
   const redeemPercent = Math.floor(
     Number(redeemBP) / 100 / (Number(redeemInterval) / 3600)
   );
+
+  const handleSubmit = async function () {
+    if (!lidPresaleSC) {
+      return;
+    }
+
+    await lidPresaleSC.methods.getRefundableEth(accountAddress).call(function (error: any, result: any){
+      if (result <= 0) {
+        alert("Refundable Eth is less than 0");
+        return;
+      }
+    })
+
+    await lidPresaleSC.methods
+      .claimRefund(accountAddress)
+      .send({from: accountAddress });
+    alert(
+      'Deposit request sent. Check your wallet to see when it has completed, then refresh this page.'
+    );
+  };
 
   const claimPeriod = toBN(finalEndTime)
     .add(toBN(redeemInterval).mul(toBN(10000)).div(toBN(redeemBP)))
@@ -102,6 +128,7 @@ const Claimer: React.FC<IClaimer> = ({
             display="inline-block"
             min={0.01}
             mt="10px"
+            onChange={updateAddress}
           />
 
           <Button
