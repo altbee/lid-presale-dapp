@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Box, Button, Grid, Input, Textarea } from '@chakra-ui/core';
+import { Text, Box, Button, Grid } from '@chakra-ui/core'
 import { shortEther, toBN, toWei } from 'utils';
 import { Contract } from 'web3-eth-contract';
 import CountDownShort from './CountDownShort';
@@ -33,36 +33,11 @@ const Claimer: React.FC<IClaimer> = ({
   isRefunding
 }) => {
   const [active, setActive] = useState(true);
-  const [accountAddress, setAccountAddress] = useState("placeHolder");
 
   const redeemPercent = Math.floor(
     Number(redeemBP) / 100 / (Number(redeemInterval) / 3600)
   );
-
-  const updateAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAccountAddress(event.target.value);
-  }
-
-  const handleSubmit = async function () {
-    if (!lidPresaleSC) {
-      return;
-    }
-
-    await lidPresaleSC.methods.getRefundableEth(accountAddress).call(function (error: any, result: any){
-      if (result <= 0) {
-        alert("Refundable Eth is less than 0");
-        return;
-      }
-    })
-
-    await lidPresaleSC.methods
-      .claimRefund(accountAddress)
-      .send({from: accountAddress });
-    alert(
-      'Deposit request sent. Check your wallet to see when it has completed, then refresh this page.'
-    );
-  };
-
+  
   const claimPeriod = toBN(finalEndTime)
     .add(toBN(redeemInterval).mul(toBN(10000)).div(toBN(redeemBP)))
     .toNumber();
@@ -77,7 +52,7 @@ const Claimer: React.FC<IClaimer> = ({
     } else {
       setActive(false);
     }
-}, [redeemBP, redeemInterval]);
+  }, [claimPeriod]);
 
   const handleClaim = async function () {
     if (!lidPresaleSC) {
@@ -271,7 +246,7 @@ const Claimer: React.FC<IClaimer> = ({
             <Text fontSize="18px" color="lid.fg">
               {`More ${meta.tokenSymbol} available to claim in`}
             </Text>
-            <CountDownShort expiryTimestamp={claimPeriod} />
+            <CountDownShort expiryTimestamp={claimPeriod * 1000} />
           </>
         ) : (
           <Text fontSize="18px" color="lid.fg">
